@@ -20,5 +20,9 @@ namespace AsusSystemAnalysis
         public static extern void HealthyTable_SetFanPwmDuty(short duty);
         [DllImport("AsusWinIO64.dll")]
         public static extern ulong Thermal_Read_Cpu_Temperature();
+        [DllImport("AsusWinIO64.dll")]
+        public static extern ulong Thermal_Read_GpuTS1L_Temperature();
+        [DllImport("AsusWinIO64.dll")]
+        public static extern ulong Thermal_Read_GpuTS1R_Temperature();
     }
 }

@@ -1,85 +1,227 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using AsusFanControl;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using AsusFanControlGUI.Properties;
+using Microsoft.Win32;
 
 namespace AsusFanControlGUI
 {
     public partial class Form1 : Form
     {
-        AsusControl asusControl = new AsusControl();
-        int fanSpeed = 0;
+        private dynamic asusControl;
+        private int fanSpeed = 0;
+        private bool serviceLoaded = false;
 
-        public Form1()
+        public Form1(bool referenceAvailable)
         {
+            // In case AsusFanControl fails to load
+            if (referenceAvailable)
+            {
+                try
+                {
+                    Assembly assembly = Assembly.Load("AsusFanControl");
+                    Type controlServiceType = assembly.GetType("AsusFanControl.AsusControl");
+                    asusControl = Activator.CreateInstance(controlServiceType);
+                    serviceLoaded = true;
+                }
+                catch
+                {
+                    MessageBox.Show("Couldn't load 'AsusControl. Please make sure that AsusFanControl.exe is in the same folder as 'AsusFanControlGUI.exe'.", "Load Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Couldn't find 'AsusFanControl.exe' in the same folder as 'AsusFanControlGUI.exe'.", "AsusFanControl.exe Missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+
             InitializeComponent();
+
+            // Themes
+            if (Settings.Default.Theme == 1)
+                setLightTheme();
+            else if(Settings.Default.Theme == 2)
+                setDarkTheme();
+            else
+                SystemTheme();
+
+            labelValue.Text = $"Status: Disabled ({Settings.Default.fanSpeed}%)";
+
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
 
-            toolStripMenuItemTurnOffControlOnExit.Checked = Properties.Settings.Default.turnOffControlOnExit;
-            toolStripMenuItemForbidUnsafeSettings.Checked = Properties.Settings.Default.forbidUnsafeSettings;
-            trackBarFanSpeed.Value = Properties.Settings.Default.fanSpeed;
+            menuItemDisableOnExit.Checked = Settings.Default.turnOffControlOnExit;
+            menuItemForbidUnsafeSettings.Checked = Settings.Default.forbidUnsafeSettings;
+            trackBarFanSpeed.Value = Settings.Default.fanSpeed;
         }
+
+        #region Themes
+
+        #region Title Bar
+
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+
+        private bool UseImmersiveDarkMode(IntPtr handle, bool enabled)
+        {
+            if (IsWindows10OrGreater(17763))
+            {
+                int attribute = 19;
+                if (IsWindows10OrGreater(18985))
+                {
+                    attribute = 20;
+                }
+
+                int useImmersiveDarkMode = enabled ? 1 : 0;
+                return DwmSetWindowAttribute(handle, attribute, ref useImmersiveDarkMode, sizeof(int)) == 0;
+            }
+
+            return false;
+        }
+
+        private bool IsWindows10OrGreater(int build = -1)
+        {
+            return Environment.OSVersion.Version.Major >= 10 && Environment.OSVersion.Version.Build >= build;
+        }
+
+        #endregion
+
+        private void SystemTheme()
+        {
+            menuItemTheme.Text = "Theme: System";
+
+            try
+            {
+                int? systemTheme = (int)Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", -1);
+
+                if (systemTheme != null)
+                    if (systemTheme != 1 && systemTheme != 3)
+                        setDarkTheme(false);
+                    else
+                        setLightTheme(false);
+            }
+            catch { } // I'll leave this empty for now
+        }
+
+        private void setDarkTheme(bool setLabel = true)
+        {
+            if (setLabel)
+                menuItemTheme.Text = "Theme: Dark";
+
+            UseImmersiveDarkMode(Handle, true);
+            menuStrip.Renderer = new MenuStripDarkModeRenderer();
+
+            this.BackColor = Color.FromArgb(30, 30, 30);
+            menuStrip.BackColor = Color.FromArgb(40, 40, 40);
+
+            // Text
+            menuItemSettings.ForeColor = Color.White;
+            menuItemCheckForUpdates.ForeColor = Color.White;
+            menuItemTheme.ForeColor = Color.White;
+            menuItemThemeSystem.ForeColor = Color.White;
+            menuItemThemeLight.ForeColor = Color.White;
+            menuItemThemeDark.ForeColor = Color.White;
+            menuItemDisableOnExit.ForeColor = Color.White;
+            menuItemForbidUnsafeSettings.ForeColor = Color.White;
+            labelValue.ForeColor = Color.White;
+            labelRPM.ForeColor = Color.White;
+            labelTemps.ForeColor = Color.White;
+            //refreshRPM.ForeColor = Color.White;
+            //refreshCPUTemp.ForeColor = Color.White;
+            labelVersion.ForeColor = Color.White;
+            checkBoxEnabled.ForeColor = Color.White;
+        }
+
+        private void setLightTheme(bool setLabel = true)
+        {
+            if (setLabel)
+                menuItemTheme.Text = "Theme: Light";
+
+            UseImmersiveDarkMode(Handle, false);
+            menuStrip.Renderer = new MenuStripResetRenderer();
+
+            this.BackColor = SystemColors.Control;
+            menuStrip.BackColor = SystemColors.Control;
+
+
+            // Text
+            menuItemSettings.ForeColor = SystemColors.ControlText;
+            menuItemCheckForUpdates.ForeColor = SystemColors.ControlText;
+            menuItemTheme.ForeColor = SystemColors.ControlText;
+            menuItemThemeSystem.ForeColor = SystemColors.ControlText;
+            menuItemThemeLight.ForeColor = SystemColors.ControlText;
+            menuItemThemeDark.ForeColor = SystemColors.ControlText;
+            menuItemDisableOnExit.ForeColor = SystemColors.ControlText;
+            menuItemForbidUnsafeSettings.ForeColor = SystemColors.ControlText;
+            labelValue.ForeColor = SystemColors.ControlText;
+            labelRPM.ForeColor = SystemColors.ControlText;
+            labelTemps.ForeColor = SystemColors.ControlText;
+            //refreshRPM.ForeColor = SystemColors.ControlText;
+            //refreshCPUTemp.ForeColor = SystemColors.ControlText;
+            labelVersion.ForeColor = SystemColors.ControlText;
+            checkBoxEnabled.ForeColor = SystemColors.ControlText;
+        }
+
+        #endregion
 
         private void OnProcessExit(object sender, EventArgs e)
         {
-            if (Properties.Settings.Default.turnOffControlOnExit)
-                asusControl.SetFanSpeeds(0);
+            if (serviceLoaded)
+                if (Settings.Default.turnOffControlOnExit)
+                    asusControl.SetFanSpeeds(0);
         }
 
-        private void toolStripMenuItemTurnOffControlOnExit_CheckedChanged(object sender, EventArgs e)
+        private void menuItemDisableOnExit_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.turnOffControlOnExit = toolStripMenuItemTurnOffControlOnExit.Checked;
-            Properties.Settings.Default.Save();
+            Settings.Default.turnOffControlOnExit = menuItemDisableOnExit.Checked;
+            Settings.Default.Save();
         }
 
-        private void toolStripMenuItemForbidUnsafeSettings_CheckedChanged(object sender, EventArgs e)
+        private void menuItemForbidUnsafeSettings_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.forbidUnsafeSettings = toolStripMenuItemForbidUnsafeSettings.Checked;
-            Properties.Settings.Default.Save();
+            Settings.Default.forbidUnsafeSettings = menuItemForbidUnsafeSettings.Checked;
+            Settings.Default.Save();
         }
 
-        private void toolStripMenuItemCheckForUpdates_Click(object sender, EventArgs e)
+        private void menuItemCheckForUpdates_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/Karmel0x/AsusFanControl/releases");
         }
 
         private void setFanSpeed()
         {
-            var value = trackBarFanSpeed.Value;
-            Properties.Settings.Default.fanSpeed = value;
-            Properties.Settings.Default.Save();
+            int value = trackBarFanSpeed.Value;
+            Settings.Default.fanSpeed = value;
+            Settings.Default.Save();
 
-            if (!checkBoxTurnOn.Checked)
+            if (!checkBoxEnabled.Checked)
                 value = 0;
 
             if (value == 0)
-                labelValue.Text = "turned off";
+                labelValue.Text = $"Status: Disabled ({trackBarFanSpeed.Value}%)";
             else
-                labelValue.Text = value.ToString();
+                labelValue.Text = $"Fan Speed: {value}%";
 
             if (fanSpeed == value)
                 return;
 
             fanSpeed = value;
 
-            asusControl.SetFanSpeeds(value);
+            if (serviceLoaded)
+                asusControl.SetFanSpeeds(fanSpeed);
         }
 
-        private void checkBoxTurnOn_CheckedChanged(object sender, EventArgs e)
+        private void checkBoxEnabled_CheckedChanged(object sender, EventArgs e)
         {
             setFanSpeed();
         }
 
         private void trackBarFanSpeed_MouseCaptureChanged(object sender, EventArgs e)
         {
-            if (Properties.Settings.Default.forbidUnsafeSettings)
+            if (Settings.Default.forbidUnsafeSettings)
             {
                 if (trackBarFanSpeed.Value < 40)
                     trackBarFanSpeed.Value = 40;
@@ -98,14 +240,58 @@ namespace AsusFanControlGUI
             trackBarFanSpeed_MouseCaptureChanged(sender, e);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void refreshRPM_Click(object sender, EventArgs e)
         {
-            labelRPM.Text = string.Join(" ", asusControl.GetFanSpeeds());
+            if (serviceLoaded)
+            {
+                List<int> fans = asusControl.GetFanSpeeds();
+                StringBuilder fanRPMs = new StringBuilder();
+
+                fanRPMs.Append("Current RPMs: ");
+
+                for (int i = 0; i < fans.Count; i++)
+                {
+                    if (i == 0)
+                        fanRPMs.Append($"Fan {i + 1}: {fans[i]}");
+                    else
+                        fanRPMs.Append($", Fan {i + 1}: {fans[i]}");
+                }
+                labelRPM.Text = fanRPMs.ToString();
+            }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void refreshCPUTemp_Click(object sender, EventArgs e)
         {
-            labelCPUTemp.Text = $"{asusControl.Thermal_Read_Cpu_Temperature()}";
+            if (serviceLoaded)
+            {
+                ulong gpuTemp = asusControl.Thermal_Read_GpuTS1L_Temperature() + asusControl.Thermal_Read_GpuTS1R_Temperature();
+
+                if (gpuTemp > 0)
+                    labelTemps.Text = $"Current temps: (CPU: {asusControl.Thermal_Read_Cpu_Temperature()}, GPU: {gpuTemp})";
+                else
+                    labelTemps.Text = $"Current temps: (CPU: {asusControl.Thermal_Read_Cpu_Temperature()})";
+            }
+        }
+
+        private void menuItemThemeSystem_Click(object sender, EventArgs e)
+        {
+            Settings.Default.Theme = 0;
+            Settings.Default.Save();
+            SystemTheme();
+        }
+
+        private void menuItemThemeLight_Click(object sender, EventArgs e)
+        {
+            Settings.Default.Theme = 1;
+            Settings.Default.Save();
+            setLightTheme();
+        }
+
+        private void menuItemThemeDark_Click(object sender, EventArgs e)
+        {
+            Settings.Default.Theme = 2;
+            Settings.Default.Save();
+            setDarkTheme();
         }
     }
 }
