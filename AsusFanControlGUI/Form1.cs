@@ -19,7 +19,7 @@ namespace AsusFanControlGUI
         private bool serviceLoaded = false;
         bool resetting = false;
 
-        public Form1(bool referenceAvailable, bool autostarted)
+        public Form1(bool referenceAvailable, bool startup)
         {
             // In case AsusFanControl fails to load
             if (referenceAvailable)
@@ -62,7 +62,7 @@ namespace AsusFanControlGUI
                 notifyIcon.DoubleClick += NotifyIcon_DoubleClick;
             }
 
-            if (autostarted)
+            if (startup)
             {
                 this.Hide();
                 notifyIcon.Visible = true;
@@ -393,9 +393,9 @@ namespace AsusFanControlGUI
                 using (RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
                 {
                     if (menuItemRunOnStartup.Checked)
-                        rk.SetValue("ASUSFanControl", Application.ExecutablePath);
+                        rk.SetValue("ASUSFanControl /startup", Application.ExecutablePath);
                     else
-                        rk.DeleteValue("ASUSFanControl", false);
+                        rk.DeleteValue("ASUSFanControl /startup", false);
                 }
             }
             catch (Exception ex)

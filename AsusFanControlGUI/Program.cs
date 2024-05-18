@@ -14,11 +14,11 @@ namespace AsusFanControlGUI
             Application.SetCompatibleTextRenderingDefault(false);
 
             bool canRun = false;
-            bool autoStart = false;
+            bool startup = false;
 
-            if (args.Length > 0  && args[0] == "/autostart")
+            if (args.Length > 0  && args[0] == "/startup")
             {
-                autoStart = true;
+                startup = true;
                 byte tries = 200;
 
                 while (tries > 0)
@@ -33,7 +33,7 @@ namespace AsusFanControlGUI
             else canRun = true;
 
             if (canRun && File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "AsusFanControl.exe")))
-                Application.Run(new Form1(true, autoStart));
+                Application.Run(new Form1(true, startup));
             else if (canRun)
                 Application.Run(new Form1(false, false));
         }
