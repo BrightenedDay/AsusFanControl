@@ -264,7 +264,7 @@ namespace AsusFanControlGUI
         {
             if (serviceLoaded)
             {
-                ulong gpuTemp = asusControl.Thermal_Read_GpuTS1L_Temperature() + asusControl.Thermal_Read_GpuTS1R_Temperature();
+                ulong gpuTemp = asusControl.Thermal_Read_Highest_Gpu_Temperature();
 
                 if (gpuTemp > 0)
                     labelTemps.Text = $"Current temps: (CPU: {asusControl.Thermal_Read_Cpu_Temperature()}, GPU: {gpuTemp})";
