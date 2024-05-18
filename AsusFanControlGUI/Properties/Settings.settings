@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="fanSpeed" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">90</Value>
+      <Value Profile="(Default)">70</Value>
     </Setting>
     <Setting Name="MinimizeToTray" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -13,6 +13,9 @@
     </Setting>
     <Setting Name="Theme" Type="System.UInt16" Scope="User">
       <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="RunOnStartup" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

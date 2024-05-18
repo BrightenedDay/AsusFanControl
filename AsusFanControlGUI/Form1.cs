@@ -67,16 +67,76 @@ namespace AsusFanControlGUI
             else if(Settings.Default.Theme == 2)
                 setDarkTheme();
             else
-                SystemTheme();
-
-            labelValue.Text = $"Status: Disabled ({Settings.Default.fanSpeed}%)";
+                setSystemTheme();
 
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
 
+            LoadSettings();
+        }
+
+        private void OnProcessExit(object sender, EventArgs e)
+        {
+            if (serviceLoaded)
+                asusControl.SetFanSpeeds(0);
+        }
+
+        private void QuitApplication_Click(object sender, EventArgs e)
+        {
+            Application.ExitThread();
+        }
+
+        private void setFanSpeed()
+        {
+            int value = trackBarFanSpeed.Value;
+            Settings.Default.fanSpeed = value;
+            Settings.Default.Save();
+
+            if (!checkBoxEnabled.Checked)
+                value = 0;
+
+            if (value == 0)
+            {
+                trayCheckBoxEnable.Text = "Status: Disabled";
+                labelValue.Text = $"Status: Disabled ({trackBarFanSpeed.Value}%)";
+            }
+            else
+            {
+                trayCheckBoxEnable.Text = "Status: Enabled";
+                labelValue.Text = $"Fan Speed: {value}%";
+            }
+
+            if (fanSpeed == value)
+                return;
+
+            fanSpeed = value;
+
+            if (serviceLoaded)
+                asusControl.SetFanSpeeds(fanSpeed);
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (Settings.Default.MinimizeToTray)
+            {
+                e.Cancel = true;
+                this.Hide();
+                notifyIcon.Visible = true;
+            }
+
+            base.OnFormClosing(e);
+        }
+
+        private void LoadSettings()
+        {
             menuItemMinimizeToTray.Checked = Settings.Default.MinimizeToTray;
+            menuItemRunOnStartup.Checked = Settings.Default.RunOnStartup;
             menuItemForbidUnsafeSettings.Checked = Settings.Default.forbidUnsafeSettings;
             trackBarFanSpeed.Value = Settings.Default.fanSpeed;
+            setFanSpeed();
+            setSystemTheme();
         }
+
+        #region GUI stuff
 
         #region Themes
 
@@ -109,7 +169,7 @@ namespace AsusFanControlGUI
 
         #endregion
 
-        private void SystemTheme()
+        private void setSystemTheme()
         {
             menuItemTheme.Text = "Theme: System";
 
@@ -154,6 +214,8 @@ namespace AsusFanControlGUI
             labelVersion.ForeColor = Color.White;
             checkBoxEnabled.ForeColor = Color.White;
             menuItemQuit.ForeColor = Color.White;
+            menuItemRunOnStartup.ForeColor = Color.White;
+            menuItemResetSettings.ForeColor = Color.White;
         }
 
         private void setLightTheme(bool setLabel = true)
@@ -185,51 +247,11 @@ namespace AsusFanControlGUI
             labelVersion.ForeColor = SystemColors.ControlText;
             checkBoxEnabled.ForeColor = SystemColors.ControlText;
             menuItemQuit.ForeColor = SystemColors.ControlText;
+            menuItemRunOnStartup.ForeColor = SystemColors.ControlText;
+            menuItemResetSettings.ForeColor = SystemColors.ControlText;
         }
 
         #endregion
-
-        private void OnProcessExit(object sender, EventArgs e)
-        {
-            if (serviceLoaded)
-                asusControl.SetFanSpeeds(0);
-        }
-
-        private void QuitApplication_Click(object sender, EventArgs e)
-        {
-            Application.ExitThread();
-        }
-
-        private void setFanSpeed()
-        {
-            int value = trackBarFanSpeed.Value;
-            Settings.Default.fanSpeed = value;
-            Settings.Default.Save();
-
-            if (!checkBoxEnabled.Checked)
-                value = 0;
-
-            if (value == 0)
-            {
-                trayCheckBoxEnable.Text = "Status: Disabled";
-                labelValue.Text = $"Status: Disabled ({trackBarFanSpeed.Value}%)";
-            }
-            else
-            {
-                trayCheckBoxEnable.Text = "Status: Enabled";
-                labelValue.Text = $"Fan Speed: {value}%";
-            }
-
-            if (fanSpeed == value)
-                return;
-
-            fanSpeed = value;
-
-            if (serviceLoaded)
-                asusControl.SetFanSpeeds(fanSpeed);
-        }
-
-        #region GUI stuff
 
         private void checkBoxEnabled_CheckedChanged(object sender, EventArgs e)
         {
@@ -300,7 +322,7 @@ namespace AsusFanControlGUI
         {
             Settings.Default.Theme = 0;
             Settings.Default.Save();
-            SystemTheme();
+            setSystemTheme();
         }
 
         private void menuItemThemeLight_Click(object sender, EventArgs e)
@@ -342,18 +364,34 @@ namespace AsusFanControlGUI
             System.Diagnostics.Process.Start("https://github.com/Karmel0x/AsusFanControl/releases");
         }
 
-        #endregion
-
-        protected override void OnFormClosing(FormClosingEventArgs e)
+        private void menuItemRunOnStartup_CheckedChanged(object sender, EventArgs e)
         {
-            if (Settings.Default.MinimizeToTray)
+            try
             {
-                e.Cancel = true;
-                this.Hide();
-                notifyIcon.Visible = true;
+                using (RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+                {
+                    if (menuItemRunOnStartup.Checked)
+                        rk.SetValue("ASUSFanControl", Application.ExecutablePath);
+                    else
+                        rk.DeleteValue("ASUSFanControl", false);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
             }
 
-            base.OnFormClosing(e);
+            Settings.Default.RunOnStartup = menuItemRunOnStartup.Checked;
+            Settings.Default.Save();
         }
+
+        private void menuItemResetSettings_Click(object sender, EventArgs e)
+        {
+            Settings.Default.Reset();
+            Settings.Default.Save();
+            LoadSettings();
+        }
+
+        #endregion
     }
 }

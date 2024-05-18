@@ -44,9 +44,11 @@
             this.menuItemThemeSystem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemThemeLight = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemThemeDark = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItemQuit = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemCheckForUpdates = new System.Windows.Forms.ToolStripMenuItem();
             this.labelVersion = new System.Windows.Forms.Label();
-            this.menuItemQuit = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItemRunOnStartup = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItemResetSettings = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarFanSpeed)).BeginInit();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -154,7 +156,9 @@
             this.menuItemSettings.BackColor = System.Drawing.Color.White;
             this.menuItemSettings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuItemMinimizeToTray,
+            this.menuItemRunOnStartup,
             this.menuItemForbidUnsafeSettings,
+            this.menuItemResetSettings,
             this.menuItemTheme,
             this.menuItemQuit});
             this.menuItemSettings.Name = "menuItemSettings";
@@ -208,6 +212,13 @@
             this.menuItemThemeDark.Text = "Dark";
             this.menuItemThemeDark.Click += new System.EventHandler(this.menuItemThemeDark_Click);
             // 
+            // menuItemQuit
+            // 
+            this.menuItemQuit.Name = "menuItemQuit";
+            this.menuItemQuit.Size = new System.Drawing.Size(315, 26);
+            this.menuItemQuit.Text = "Quit";
+            this.menuItemQuit.Click += new System.EventHandler(this.QuitApplication_Click);
+            // 
             // menuItemCheckForUpdates
             // 
             this.menuItemCheckForUpdates.Name = "menuItemCheckForUpdates";
@@ -228,12 +239,20 @@
             this.labelVersion.Text = "v1.4";
             this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // menuItemQuit
+            // menuItemRunOnStartup
             // 
-            this.menuItemQuit.Name = "menuItemQuit";
-            this.menuItemQuit.Size = new System.Drawing.Size(315, 26);
-            this.menuItemQuit.Text = "Quit";
-            this.menuItemQuit.Click += new System.EventHandler(this.QuitApplication_Click);
+            this.menuItemRunOnStartup.CheckOnClick = true;
+            this.menuItemRunOnStartup.Name = "menuItemRunOnStartup";
+            this.menuItemRunOnStartup.Size = new System.Drawing.Size(315, 26);
+            this.menuItemRunOnStartup.Text = "Run on startup";
+            this.menuItemRunOnStartup.CheckedChanged += new System.EventHandler(this.menuItemRunOnStartup_CheckedChanged);
+            // 
+            // menuItemResetSettings
+            // 
+            this.menuItemResetSettings.Name = "menuItemResetSettings";
+            this.menuItemResetSettings.Size = new System.Drawing.Size(315, 26);
+            this.menuItemResetSettings.Text = "Reset settings";
+            this.menuItemResetSettings.Click += new System.EventHandler(this.menuItemResetSettings_Click);
             // 
             // Form1
             // 
@@ -286,6 +305,8 @@
         private System.Windows.Forms.ToolStripMenuItem menuItemThemeLight;
         private System.Windows.Forms.ToolStripMenuItem menuItemThemeDark;
         private System.Windows.Forms.ToolStripMenuItem menuItemQuit;
+        private System.Windows.Forms.ToolStripMenuItem menuItemRunOnStartup;
+        private System.Windows.Forms.ToolStripMenuItem menuItemResetSettings;
     }
 }
 
