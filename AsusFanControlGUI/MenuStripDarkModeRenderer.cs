@@ -10,8 +10,8 @@ namespace AsusFanControlGUI
 
         protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
         {
-            if (e.Item.Text == "Settings")
-                e.Item.BackColor = Color.FromArgb(40, 40, 40);
+            if (e.Item is ToolStripMenuItem && e.Item.OwnerItem == null)
+                e.Item.BackColor = Color.FromArgb(40, 40, 60);
 
             base.OnRenderMenuItemBackground(e);
         }
@@ -52,11 +52,7 @@ namespace AsusFanControlGUI
 
         public override Color SeparatorDark => Color.Black;
 
-        public override Color ToolStripPanelGradientBegin => Color.FromArgb(40, 40, 40);
-
         public override Color MenuItemSelected => Color.FromArgb(40, 40, 40);
-
-        public override Color MenuItemPressedGradientMiddle => Color.FromArgb(40, 40, 40);
 
     }
 }

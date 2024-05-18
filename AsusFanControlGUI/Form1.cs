@@ -115,7 +115,7 @@ namespace AsusFanControlGUI
             menuStrip.Renderer = new MenuStripDarkModeRenderer();
 
             this.BackColor = Color.FromArgb(30, 30, 30);
-            menuStrip.BackColor = Color.FromArgb(40, 40, 40);
+            menuStrip.BackColor = Color.FromArgb(40, 40, 60);
 
             // Text
             menuItemSettings.ForeColor = Color.White;
@@ -144,7 +144,7 @@ namespace AsusFanControlGUI
             menuStrip.Renderer = new MenuStripLightModeRenderer();
 
             this.BackColor = SystemColors.Control;
-            menuStrip.BackColor = SystemColors.Control;
+            menuStrip.BackColor = Color.White;
 
 
             // Text

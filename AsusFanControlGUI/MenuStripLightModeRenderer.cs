@@ -5,12 +5,12 @@ namespace AsusFanControlGUI
 {
     internal class MenuStripLightModeRenderer : ToolStripProfessionalRenderer
     {
-        public MenuStripLightModeRenderer() : base() { }
+        public MenuStripLightModeRenderer() { }
 
         protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
         {
-            if (e.Item.Text == "Settings")
-                e.Item.BackColor = SystemColors.Control;
+            if (e.Item is ToolStripMenuItem && e.Item.OwnerItem == null)
+                e.Item.BackColor = Color.White;
 
             base.OnRenderMenuItemBackground(e);
         }

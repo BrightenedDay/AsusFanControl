@@ -136,7 +136,7 @@
             // 
             // menuStrip
             // 
-            this.menuStrip.BackColor = System.Drawing.SystemColors.Control;
+            this.menuStrip.BackColor = System.Drawing.Color.White;
             this.menuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuItemSettings,
@@ -144,7 +144,7 @@
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.menuStrip.Size = new System.Drawing.Size(432, 30);
+            this.menuStrip.Size = new System.Drawing.Size(432, 28);
             this.menuStrip.TabIndex = 10;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -156,7 +156,7 @@
             this.menuItemForbidUnsafeSettings,
             this.menuItemTheme});
             this.menuItemSettings.Name = "menuItemSettings";
-            this.menuItemSettings.Size = new System.Drawing.Size(76, 26);
+            this.menuItemSettings.Size = new System.Drawing.Size(76, 24);
             this.menuItemSettings.Text = "Settings";
             // 
             // menuItemDisableOnExit
@@ -209,7 +209,7 @@
             // menuItemCheckForUpdates
             // 
             this.menuItemCheckForUpdates.Name = "menuItemCheckForUpdates";
-            this.menuItemCheckForUpdates.Size = new System.Drawing.Size(142, 26);
+            this.menuItemCheckForUpdates.Size = new System.Drawing.Size(142, 24);
             this.menuItemCheckForUpdates.Text = "Check for updates";
             this.menuItemCheckForUpdates.Click += new System.EventHandler(this.menuItemCheckForUpdates_Click);
             // 
