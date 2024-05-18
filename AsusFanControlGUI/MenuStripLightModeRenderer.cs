@@ -3,9 +3,9 @@ using System.Windows.Forms;
 
 namespace AsusFanControlGUI
 {
-    internal class MenuStripResetRenderer : ToolStripProfessionalRenderer
+    internal class MenuStripLightModeRenderer : ToolStripProfessionalRenderer
     {
-        public MenuStripResetRenderer() : base() { }
+        public MenuStripLightModeRenderer() : base() { }
 
         protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
         {

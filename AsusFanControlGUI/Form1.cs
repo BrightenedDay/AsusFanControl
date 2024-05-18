@@ -141,7 +141,7 @@ namespace AsusFanControlGUI
                 menuItemTheme.Text = "Theme: Light";
 
             UseImmersiveDarkMode(Handle, false);
-            menuStrip.Renderer = new MenuStripResetRenderer();
+            menuStrip.Renderer = new MenuStripLightModeRenderer();
 
             this.BackColor = SystemColors.Control;
             menuStrip.BackColor = SystemColors.Control;
