@@ -16,6 +16,9 @@ namespace AsusFanControl
                 Console.WriteLine("\t--get-fan-speed=fanId (comma separated)");
                 Console.WriteLine("\t--set-fan-speed=fanId:0-100 (comma separated, percent value, 0 for turning off test mode)");
                 Console.WriteLine("\t--get-cpu-temp");
+                Console.WriteLine("\t--get-gpu-ts1l-temp");
+                Console.WriteLine("\t--get-gpu-ts1r-temp");
+                Console.WriteLine("\t--get-highest-gpu-temp");
                 return 1;
             }
 
@@ -78,6 +81,24 @@ namespace AsusFanControl
                 {
                     var cpuTemp = asusControl.Thermal_Read_Cpu_Temperature();
                     Console.WriteLine($"Current CPU temp: {cpuTemp}");
+                }
+
+                if (arg.StartsWith("--get-gpu-ts1l-temp"))
+                {
+                    var temp = asusControl.Thermal_Read_GpuTS1L_Temperature();
+                    Console.WriteLine($"Current GPU TS1L temp: {temp}");
+                }
+
+                if (arg.StartsWith("--get-gpu-ts1r-temp"))
+                {
+                    var temp = asusControl.Thermal_Read_GpuTS1R_Temperature();
+                    Console.WriteLine($"Current GPU TS1R temp: {temp}");
+                }
+
+                if (arg.StartsWith("--get-highest-gpu-temp"))
+                {
+                    var temp = asusControl.Thermal_Read_Highest_Gpu_Temperature();
+                    Console.WriteLine($"Current Highest GPU temp: {temp}");
                 }
             }
 

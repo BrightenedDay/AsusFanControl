@@ -83,5 +83,16 @@ namespace AsusFanControl
         {
             return AsusWinIO64.Thermal_Read_GpuTS1R_Temperature();
         }
+
+        public ulong Thermal_Read_Highest_Gpu_Temperature()
+        {
+            ulong left = AsusWinIO64.Thermal_Read_GpuTS1L_Temperature();
+            ulong right = AsusWinIO64.Thermal_Read_GpuTS1R_Temperature();
+
+            if (left > right)
+                return left;
+            else
+                return right;
+        }
     }
 }
