@@ -34,11 +34,11 @@
             this.labelRPM = new System.Windows.Forms.Label();
             this.refreshRPM = new System.Windows.Forms.Button();
             this.checkBoxEnabled = new System.Windows.Forms.CheckBox();
-            this.refreshCPUTemp = new System.Windows.Forms.Button();
+            this.refreshTemps = new System.Windows.Forms.Button();
             this.labelTemps = new System.Windows.Forms.Label();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.menuItemSettings = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuItemDisableOnExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItemMinimizeToTray = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemForbidUnsafeSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemTheme = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemThemeSystem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,6 +46,7 @@
             this.menuItemThemeDark = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemCheckForUpdates = new System.Windows.Forms.ToolStripMenuItem();
             this.labelVersion = new System.Windows.Forms.Label();
+            this.menuItemQuit = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarFanSpeed)).BeginInit();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -110,17 +111,17 @@
             this.checkBoxEnabled.UseVisualStyleBackColor = true;
             this.checkBoxEnabled.CheckedChanged += new System.EventHandler(this.checkBoxEnabled_CheckedChanged);
             // 
-            // refreshCPUTemp
+            // refreshTemps
             // 
-            this.refreshCPUTemp.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.refreshCPUTemp.Location = new System.Drawing.Point(16, 201);
-            this.refreshCPUTemp.Margin = new System.Windows.Forms.Padding(4);
-            this.refreshCPUTemp.Name = "refreshCPUTemp";
-            this.refreshCPUTemp.Size = new System.Drawing.Size(29, 28);
-            this.refreshCPUTemp.TabIndex = 8;
-            this.refreshCPUTemp.Text = "↻";
-            this.refreshCPUTemp.UseVisualStyleBackColor = true;
-            this.refreshCPUTemp.Click += new System.EventHandler(this.refreshCPUTemp_Click);
+            this.refreshTemps.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.refreshTemps.Location = new System.Drawing.Point(16, 201);
+            this.refreshTemps.Margin = new System.Windows.Forms.Padding(4);
+            this.refreshTemps.Name = "refreshTemps";
+            this.refreshTemps.Size = new System.Drawing.Size(29, 28);
+            this.refreshTemps.TabIndex = 8;
+            this.refreshTemps.Text = "↻";
+            this.refreshTemps.UseVisualStyleBackColor = true;
+            this.refreshTemps.Click += new System.EventHandler(this.refreshTemps_Click);
             // 
             // labelTemps
             // 
@@ -150,28 +151,29 @@
             // 
             // menuItemSettings
             // 
-            this.menuItemSettings.BackColor = System.Drawing.SystemColors.Control;
+            this.menuItemSettings.BackColor = System.Drawing.Color.White;
             this.menuItemSettings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuItemDisableOnExit,
+            this.menuItemMinimizeToTray,
             this.menuItemForbidUnsafeSettings,
-            this.menuItemTheme});
+            this.menuItemTheme,
+            this.menuItemQuit});
             this.menuItemSettings.Name = "menuItemSettings";
             this.menuItemSettings.Size = new System.Drawing.Size(76, 24);
             this.menuItemSettings.Text = "Settings";
             // 
-            // menuItemDisableOnExit
+            // menuItemMinimizeToTray
             // 
-            this.menuItemDisableOnExit.CheckOnClick = true;
-            this.menuItemDisableOnExit.Name = "menuItemDisableOnExit";
-            this.menuItemDisableOnExit.Size = new System.Drawing.Size(237, 26);
-            this.menuItemDisableOnExit.Text = "Disable on exit";
-            this.menuItemDisableOnExit.CheckedChanged += new System.EventHandler(this.menuItemDisableOnExit_CheckedChanged);
+            this.menuItemMinimizeToTray.CheckOnClick = true;
+            this.menuItemMinimizeToTray.Name = "menuItemMinimizeToTray";
+            this.menuItemMinimizeToTray.Size = new System.Drawing.Size(315, 26);
+            this.menuItemMinimizeToTray.Text = "Minimize to tray on window close";
+            this.menuItemMinimizeToTray.CheckedChanged += new System.EventHandler(this.menuItemMinimizeToTray_CheckedChanged);
             // 
             // menuItemForbidUnsafeSettings
             // 
             this.menuItemForbidUnsafeSettings.CheckOnClick = true;
             this.menuItemForbidUnsafeSettings.Name = "menuItemForbidUnsafeSettings";
-            this.menuItemForbidUnsafeSettings.Size = new System.Drawing.Size(237, 26);
+            this.menuItemForbidUnsafeSettings.Size = new System.Drawing.Size(315, 26);
             this.menuItemForbidUnsafeSettings.Text = "Forbid unsafe settings";
             this.menuItemForbidUnsafeSettings.CheckedChanged += new System.EventHandler(this.menuItemForbidUnsafeSettings_CheckedChanged);
             // 
@@ -182,7 +184,7 @@
             this.menuItemThemeLight,
             this.menuItemThemeDark});
             this.menuItemTheme.Name = "menuItemTheme";
-            this.menuItemTheme.Size = new System.Drawing.Size(237, 26);
+            this.menuItemTheme.Size = new System.Drawing.Size(315, 26);
             this.menuItemTheme.Text = "Theme: System";
             // 
             // menuItemThemeSystem
@@ -226,6 +228,13 @@
             this.labelVersion.Text = "v1.4";
             this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // menuItemQuit
+            // 
+            this.menuItemQuit.Name = "menuItemQuit";
+            this.menuItemQuit.Size = new System.Drawing.Size(315, 26);
+            this.menuItemQuit.Text = "Quit";
+            this.menuItemQuit.Click += new System.EventHandler(this.QuitApplication_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -233,7 +242,7 @@
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(432, 244);
             this.Controls.Add(this.labelVersion);
-            this.Controls.Add(this.refreshCPUTemp);
+            this.Controls.Add(this.refreshTemps);
             this.Controls.Add(this.labelTemps);
             this.Controls.Add(this.checkBoxEnabled);
             this.Controls.Add(this.refreshRPM);
@@ -264,11 +273,11 @@
         private System.Windows.Forms.Label labelRPM;
         private System.Windows.Forms.Button refreshRPM;
         private System.Windows.Forms.CheckBox checkBoxEnabled;
-        private System.Windows.Forms.Button refreshCPUTemp;
+        private System.Windows.Forms.Button refreshTemps;
         private System.Windows.Forms.Label labelTemps;
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem menuItemSettings;
-        private System.Windows.Forms.ToolStripMenuItem menuItemDisableOnExit;
+        private System.Windows.Forms.ToolStripMenuItem menuItemMinimizeToTray;
         private System.Windows.Forms.ToolStripMenuItem menuItemForbidUnsafeSettings;
         private System.Windows.Forms.ToolStripMenuItem menuItemCheckForUpdates;
         private System.Windows.Forms.Label labelVersion;
@@ -276,6 +285,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuItemThemeSystem;
         private System.Windows.Forms.ToolStripMenuItem menuItemThemeLight;
         private System.Windows.Forms.ToolStripMenuItem menuItemThemeDark;
+        private System.Windows.Forms.ToolStripMenuItem menuItemQuit;
     }
 }
 

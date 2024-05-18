@@ -37,13 +37,13 @@ namespace AsusFanControlGUI.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool turnOffControlOnExit {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MinimizeToTray {
             get {
-                return ((bool)(this["turnOffControlOnExit"]));
+                return ((bool)(this["MinimizeToTray"]));
             }
             set {
-                this["turnOffControlOnExit"] = value;
+                this["MinimizeToTray"] = value;
             }
         }
         

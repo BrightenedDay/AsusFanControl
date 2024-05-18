@@ -5,7 +5,7 @@ namespace AsusFanControlGUI
 {
     internal class MenuStripLightModeRenderer : ToolStripProfessionalRenderer
     {
-        public MenuStripLightModeRenderer() { }
+        public MenuStripLightModeRenderer() : base(new LightModeColors()) { }
 
         protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
         {
@@ -15,5 +15,14 @@ namespace AsusFanControlGUI
             base.OnRenderMenuItemBackground(e);
         }
 
+    }
+
+    public class LightModeColors : ProfessionalColorTable
+    {
+        public override Color ImageMarginGradientBegin => Color.White;
+
+        public override Color ImageMarginGradientMiddle => Color.White;
+
+        public override Color ImageMarginGradientEnd => Color.White;
     }
 }

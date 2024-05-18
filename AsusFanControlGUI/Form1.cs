@@ -12,6 +12,8 @@ namespace AsusFanControlGUI
 {
     public partial class Form1 : Form
     {
+        private NotifyIcon notifyIcon;
+        private MenuItem trayCheckBoxEnable;
         private dynamic asusControl;
         private int fanSpeed = 0;
         private bool serviceLoaded = false;
@@ -38,8 +40,26 @@ namespace AsusFanControlGUI
                 MessageBox.Show("Couldn't find 'AsusFanControl.exe' in the same folder as 'AsusFanControlGUI.exe'.", "AsusFanControl.exe Missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-
             InitializeComponent();
+
+            // Initialize tray if 'AsusFanControl.exe' loaded in
+            if (serviceLoaded)
+            {
+                notifyIcon = new NotifyIcon();
+                notifyIcon.Text = "ASUS Fan Control";
+                notifyIcon.Icon = Resources.appIcon;
+
+                trayCheckBoxEnable = new MenuItem("Enable", traySwitchState_Click);
+
+                notifyIcon.ContextMenu = new ContextMenu(new MenuItem[] {
+                    trayCheckBoxEnable,
+                    new MenuItem("Quit", QuitApplication_Click)
+                });
+
+                notifyIcon.Visible = false;
+
+                notifyIcon.DoubleClick += NotifyIcon_DoubleClick;
+            }
 
             // Themes
             if (Settings.Default.Theme == 1)
@@ -53,7 +73,7 @@ namespace AsusFanControlGUI
 
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
 
-            menuItemDisableOnExit.Checked = Settings.Default.turnOffControlOnExit;
+            menuItemMinimizeToTray.Checked = Settings.Default.MinimizeToTray;
             menuItemForbidUnsafeSettings.Checked = Settings.Default.forbidUnsafeSettings;
             trackBarFanSpeed.Value = Settings.Default.fanSpeed;
         }
@@ -124,7 +144,7 @@ namespace AsusFanControlGUI
             menuItemThemeSystem.ForeColor = Color.White;
             menuItemThemeLight.ForeColor = Color.White;
             menuItemThemeDark.ForeColor = Color.White;
-            menuItemDisableOnExit.ForeColor = Color.White;
+            menuItemMinimizeToTray.ForeColor = Color.White;
             menuItemForbidUnsafeSettings.ForeColor = Color.White;
             labelValue.ForeColor = Color.White;
             labelRPM.ForeColor = Color.White;
@@ -133,6 +153,7 @@ namespace AsusFanControlGUI
             //refreshCPUTemp.ForeColor = Color.White;
             labelVersion.ForeColor = Color.White;
             checkBoxEnabled.ForeColor = Color.White;
+            menuItemQuit.ForeColor = Color.White;
         }
 
         private void setLightTheme(bool setLabel = true)
@@ -154,7 +175,7 @@ namespace AsusFanControlGUI
             menuItemThemeSystem.ForeColor = SystemColors.ControlText;
             menuItemThemeLight.ForeColor = SystemColors.ControlText;
             menuItemThemeDark.ForeColor = SystemColors.ControlText;
-            menuItemDisableOnExit.ForeColor = SystemColors.ControlText;
+            menuItemMinimizeToTray.ForeColor = SystemColors.ControlText;
             menuItemForbidUnsafeSettings.ForeColor = SystemColors.ControlText;
             labelValue.ForeColor = SystemColors.ControlText;
             labelRPM.ForeColor = SystemColors.ControlText;
@@ -163,6 +184,7 @@ namespace AsusFanControlGUI
             //refreshCPUTemp.ForeColor = SystemColors.ControlText;
             labelVersion.ForeColor = SystemColors.ControlText;
             checkBoxEnabled.ForeColor = SystemColors.ControlText;
+            menuItemQuit.ForeColor = SystemColors.ControlText;
         }
 
         #endregion
@@ -170,25 +192,12 @@ namespace AsusFanControlGUI
         private void OnProcessExit(object sender, EventArgs e)
         {
             if (serviceLoaded)
-                if (Settings.Default.turnOffControlOnExit)
-                    asusControl.SetFanSpeeds(0);
+                asusControl.SetFanSpeeds(0);
         }
 
-        private void menuItemDisableOnExit_CheckedChanged(object sender, EventArgs e)
+        private void QuitApplication_Click(object sender, EventArgs e)
         {
-            Settings.Default.turnOffControlOnExit = menuItemDisableOnExit.Checked;
-            Settings.Default.Save();
-        }
-
-        private void menuItemForbidUnsafeSettings_CheckedChanged(object sender, EventArgs e)
-        {
-            Settings.Default.forbidUnsafeSettings = menuItemForbidUnsafeSettings.Checked;
-            Settings.Default.Save();
-        }
-
-        private void menuItemCheckForUpdates_Click(object sender, EventArgs e)
-        {
-            System.Diagnostics.Process.Start("https://github.com/Karmel0x/AsusFanControl/releases");
+            Application.ExitThread();
         }
 
         private void setFanSpeed()
@@ -201,9 +210,15 @@ namespace AsusFanControlGUI
                 value = 0;
 
             if (value == 0)
+            {
+                trayCheckBoxEnable.Text = "Status: Disabled";
                 labelValue.Text = $"Status: Disabled ({trackBarFanSpeed.Value}%)";
+            }
             else
+            {
+                trayCheckBoxEnable.Text = "Status: Enabled";
                 labelValue.Text = $"Fan Speed: {value}%";
+            }
 
             if (fanSpeed == value)
                 return;
@@ -214,8 +229,16 @@ namespace AsusFanControlGUI
                 asusControl.SetFanSpeeds(fanSpeed);
         }
 
+        #region GUI stuff
+
         private void checkBoxEnabled_CheckedChanged(object sender, EventArgs e)
         {
+            setFanSpeed();
+        }
+
+        private void traySwitchState_Click(object sender, EventArgs e)
+        {
+            checkBoxEnabled.Checked = !checkBoxEnabled.Checked;
             setFanSpeed();
         }
 
@@ -260,7 +283,7 @@ namespace AsusFanControlGUI
             }
         }
 
-        private void refreshCPUTemp_Click(object sender, EventArgs e)
+        private void refreshTemps_Click(object sender, EventArgs e)
         {
             if (serviceLoaded)
             {
@@ -292,6 +315,45 @@ namespace AsusFanControlGUI
             Settings.Default.Theme = 2;
             Settings.Default.Save();
             setDarkTheme();
+        }
+
+        private void NotifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+            this.BringToFront();
+            notifyIcon.Visible = false;
+        }
+
+        private void menuItemMinimizeToTray_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Default.MinimizeToTray = menuItemMinimizeToTray.Checked;
+            Settings.Default.Save();
+        }
+
+        private void menuItemForbidUnsafeSettings_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Default.forbidUnsafeSettings = menuItemForbidUnsafeSettings.Checked;
+            Settings.Default.Save();
+        }
+
+        private void menuItemCheckForUpdates_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/Karmel0x/AsusFanControl/releases");
+        }
+
+        #endregion
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (Settings.Default.MinimizeToTray)
+            {
+                e.Cancel = true;
+                this.Hide();
+                notifyIcon.Visible = true;
+            }
+
+            base.OnFormClosing(e);
         }
     }
 }
