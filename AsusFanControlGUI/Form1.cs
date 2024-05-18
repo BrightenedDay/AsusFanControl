@@ -17,8 +17,9 @@ namespace AsusFanControlGUI
         private dynamic asusControl;
         private int fanSpeed = 0;
         private bool serviceLoaded = false;
+        bool resetting = false;
 
-        public Form1(bool referenceAvailable)
+        public Form1(bool referenceAvailable, bool autostarted)
         {
             // In case AsusFanControl fails to load
             if (referenceAvailable)
@@ -61,6 +62,14 @@ namespace AsusFanControlGUI
                 notifyIcon.DoubleClick += NotifyIcon_DoubleClick;
             }
 
+            if (autostarted)
+            {
+                this.Hide();
+                notifyIcon.Visible = true;
+            }
+
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
+
             // Themes
             if (Settings.Default.Theme == 1)
                 setLightTheme();
@@ -69,7 +78,6 @@ namespace AsusFanControlGUI
             else
                 setSystemTheme();
 
-            AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
 
             LoadSettings();
         }
@@ -128,12 +136,15 @@ namespace AsusFanControlGUI
 
         private void LoadSettings()
         {
+            resetting = true;
             menuItemMinimizeToTray.Checked = Settings.Default.MinimizeToTray;
             menuItemRunOnStartup.Checked = Settings.Default.RunOnStartup;
             menuItemForbidUnsafeSettings.Checked = Settings.Default.forbidUnsafeSettings;
+            checkBoxEnabled.Checked = Settings.Default.Enabled;
             trackBarFanSpeed.Value = Settings.Default.fanSpeed;
             setFanSpeed();
             setSystemTheme();
+            resetting = false;
         }
 
         #region GUI stuff
@@ -255,7 +266,12 @@ namespace AsusFanControlGUI
 
         private void checkBoxEnabled_CheckedChanged(object sender, EventArgs e)
         {
-            setFanSpeed();
+            if (!resetting)
+            {
+                Settings.Default.Enabled = checkBoxEnabled.Checked;
+                Settings.Default.Save();
+                setFanSpeed();
+            }
         }
 
         private void traySwitchState_Click(object sender, EventArgs e)
@@ -349,14 +365,20 @@ namespace AsusFanControlGUI
 
         private void menuItemMinimizeToTray_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.Default.MinimizeToTray = menuItemMinimizeToTray.Checked;
-            Settings.Default.Save();
+            if (!resetting)
+            {
+                Settings.Default.MinimizeToTray = menuItemMinimizeToTray.Checked;
+                Settings.Default.Save();
+            }
         }
 
         private void menuItemForbidUnsafeSettings_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.Default.forbidUnsafeSettings = menuItemForbidUnsafeSettings.Checked;
-            Settings.Default.Save();
+            if (!resetting)
+            {
+                Settings.Default.forbidUnsafeSettings = menuItemForbidUnsafeSettings.Checked;
+                Settings.Default.Save();
+            }
         }
 
         private void menuItemCheckForUpdates_Click(object sender, EventArgs e)
@@ -381,8 +403,11 @@ namespace AsusFanControlGUI
                 MessageBox.Show("Error: " + ex.Message);
             }
 
-            Settings.Default.RunOnStartup = menuItemRunOnStartup.Checked;
-            Settings.Default.Save();
+            if (!resetting)
+            {
+                Settings.Default.RunOnStartup = menuItemRunOnStartup.Checked;
+                Settings.Default.Save();
+            }
         }
 
         private void menuItemResetSettings_Click(object sender, EventArgs e)
