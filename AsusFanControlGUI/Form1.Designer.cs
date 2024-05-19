@@ -147,7 +147,7 @@
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.menuStrip.Size = new System.Drawing.Size(432, 30);
+            this.menuStrip.Size = new System.Drawing.Size(432, 28);
             this.menuStrip.TabIndex = 10;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -162,7 +162,7 @@
             this.menuItemTheme,
             this.menuItemQuit});
             this.menuItemSettings.Name = "menuItemSettings";
-            this.menuItemSettings.Size = new System.Drawing.Size(76, 26);
+            this.menuItemSettings.Size = new System.Drawing.Size(76, 24);
             this.menuItemSettings.Text = "Settings";
             // 
             // menuItemMinimizeToTray
@@ -237,7 +237,7 @@
             // menuItemCheckForUpdates
             // 
             this.menuItemCheckForUpdates.Name = "menuItemCheckForUpdates";
-            this.menuItemCheckForUpdates.Size = new System.Drawing.Size(142, 26);
+            this.menuItemCheckForUpdates.Size = new System.Drawing.Size(142, 24);
             this.menuItemCheckForUpdates.Text = "Check for updates";
             this.menuItemCheckForUpdates.Click += new System.EventHandler(this.menuItemCheckForUpdates_Click);
             // 
@@ -251,7 +251,7 @@
             this.labelVersion.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.labelVersion.Size = new System.Drawing.Size(117, 20);
             this.labelVersion.TabIndex = 11;
-            this.labelVersion.Text = "v1.4";
+            this.labelVersion.Text = "v1.5";
             this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Main
