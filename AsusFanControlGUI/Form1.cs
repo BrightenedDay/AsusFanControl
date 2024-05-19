@@ -62,13 +62,12 @@ namespace AsusFanControlGUI
                 notifyIcon.DoubleClick += NotifyIcon_DoubleClick;
             }
 
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
+
             if (startup)
             {
-                this.Hide();
                 notifyIcon.Visible = true;
             }
-
-            AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
 
             // Themes
             if (Settings.Default.Theme == 1)
@@ -79,7 +78,7 @@ namespace AsusFanControlGUI
                 setSystemTheme();
 
 
-            LoadSettings();
+            LoadSettings(false);
         }
 
         private void OnProcessExit(object sender, EventArgs e)
@@ -127,14 +126,20 @@ namespace AsusFanControlGUI
             if (Settings.Default.MinimizeToTray)
             {
                 e.Cancel = true;
-                this.Hide();
+                this.Visible = false;;
                 notifyIcon.Visible = true;
             }
 
             base.OnFormClosing(e);
         }
 
-        private void LoadSettings()
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            base.OnFormClosed(e);
+            Application.ExitThread();
+        }
+
+        private void LoadSettings(bool setSystemTheme = true)
         {
             resetting = true;
             menuItemMinimizeToTray.Checked = Settings.Default.MinimizeToTray;
@@ -143,7 +148,10 @@ namespace AsusFanControlGUI
             checkBoxEnabled.Checked = Settings.Default.Enabled;
             trackBarFanSpeed.Value = Settings.Default.fanSpeed;
             setFanSpeed();
-            setSystemTheme();
+
+            if (setSystemTheme)
+                this.setSystemTheme();
+
             resetting = false;
         }
 
@@ -357,7 +365,7 @@ namespace AsusFanControlGUI
 
         private void NotifyIcon_DoubleClick(object sender, EventArgs e)
         {
-            this.Show();
+            this.Visible = true;;
             this.WindowState = FormWindowState.Normal;
             this.BringToFront();
             notifyIcon.Visible = false;
@@ -393,9 +401,9 @@ namespace AsusFanControlGUI
                 using (RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
                 {
                     if (menuItemRunOnStartup.Checked)
-                        rk.SetValue("ASUSFanControl /startup", Application.ExecutablePath);
+                        rk.SetValue("ASUSFanControl", '"' + Application.ExecutablePath.Replace('/', '\\') + '"' + " -startup");
                     else
-                        rk.DeleteValue("ASUSFanControl /startup", false);
+                        rk.DeleteValue("ASUSFanControl", false);
                 }
             }
             catch (Exception ex)

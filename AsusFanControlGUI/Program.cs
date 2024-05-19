@@ -7,35 +7,35 @@ namespace AsusFanControlGUI
 {
     internal static class Program
     {
+        private const string appGuid = "s0h87b5a-122ab-88j5-b5d9-dg5hfal6e7p9";
+
         [STAThread]
         static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
-            bool canRun = false;
-            bool startup = false;
-
-            if (args.Length > 0  && args[0] == "/startup")
+            using (Mutex mutex = new Mutex(false, "Global\\" + appGuid))
             {
-                startup = true;
-                byte tries = 200;
-
-                while (tries > 0)
+                if (!mutex.WaitOne(0, false))
                 {
-                    tries--;
-                    Thread.Sleep(1000);
+                    return;
+                }
 
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+
+                if (args.Length > 0 && args[0] == "-startup")
+                {
+                    Form1 main = new Form1(true, true);
+                    main.Visible = false;
+                    Application.Run();
+                }
+                else
+                {
                     if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "AsusFanControl.exe")))
-                        canRun = true;
+                        Application.Run(new Form1(true, false));
+                    else
+                        Application.Run(new Form1(false, false));
                 }
             }
-            else canRun = true;
-
-            if (canRun && File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "AsusFanControl.exe")))
-                Application.Run(new Form1(true, startup));
-            else if (canRun)
-                Application.Run(new Form1(false, false));
         }
     }
 }
