@@ -10,7 +10,7 @@ using Microsoft.Win32;
 
 namespace AsusFanControlGUI
 {
-    public partial class Form1 : Form
+    public partial class Main : Form
     {
         private NotifyIcon notifyIcon;
         private MenuItem trayCheckBoxEnable;
@@ -19,7 +19,7 @@ namespace AsusFanControlGUI
         private bool serviceLoaded = false;
         bool resetting = false;
 
-        public Form1(bool referenceAvailable, bool startup)
+        public Main(bool referenceAvailable, bool startup)
         {
             // In case AsusFanControl fails to load
             if (referenceAvailable)
@@ -365,8 +365,9 @@ namespace AsusFanControlGUI
 
         private void NotifyIcon_DoubleClick(object sender, EventArgs e)
         {
-            this.Visible = true;;
             this.WindowState = FormWindowState.Normal;
+            this.CenterToScreen();
+            this.Visible = true;;
             this.BringToFront();
             notifyIcon.Visible = false;
         }

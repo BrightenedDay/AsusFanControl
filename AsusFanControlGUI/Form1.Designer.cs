@@ -1,6 +1,6 @@
 ﻿namespace AsusFanControlGUI
 {
-    partial class Form1
+    partial class Main
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.trackBarFanSpeed = new System.Windows.Forms.TrackBar();
             this.labelValue = new System.Windows.Forms.Label();
             this.labelRPM = new System.Windows.Forms.Label();
@@ -39,7 +39,9 @@
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.menuItemSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemMinimizeToTray = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItemRunOnStartup = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemForbidUnsafeSettings = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItemResetSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemTheme = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemThemeSystem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemThemeLight = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,8 +49,6 @@
             this.menuItemQuit = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemCheckForUpdates = new System.Windows.Forms.ToolStripMenuItem();
             this.labelVersion = new System.Windows.Forms.Label();
-            this.menuItemRunOnStartup = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuItemResetSettings = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarFanSpeed)).BeginInit();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -147,7 +147,7 @@
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.menuStrip.Size = new System.Drawing.Size(432, 28);
+            this.menuStrip.Size = new System.Drawing.Size(432, 30);
             this.menuStrip.TabIndex = 10;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -162,7 +162,7 @@
             this.menuItemTheme,
             this.menuItemQuit});
             this.menuItemSettings.Name = "menuItemSettings";
-            this.menuItemSettings.Size = new System.Drawing.Size(76, 24);
+            this.menuItemSettings.Size = new System.Drawing.Size(76, 26);
             this.menuItemSettings.Text = "Settings";
             // 
             // menuItemMinimizeToTray
@@ -173,6 +173,14 @@
             this.menuItemMinimizeToTray.Text = "Minimize to tray on window close";
             this.menuItemMinimizeToTray.CheckedChanged += new System.EventHandler(this.menuItemMinimizeToTray_CheckedChanged);
             // 
+            // menuItemRunOnStartup
+            // 
+            this.menuItemRunOnStartup.CheckOnClick = true;
+            this.menuItemRunOnStartup.Name = "menuItemRunOnStartup";
+            this.menuItemRunOnStartup.Size = new System.Drawing.Size(315, 26);
+            this.menuItemRunOnStartup.Text = "Run on startup";
+            this.menuItemRunOnStartup.CheckedChanged += new System.EventHandler(this.menuItemRunOnStartup_CheckedChanged);
+            // 
             // menuItemForbidUnsafeSettings
             // 
             this.menuItemForbidUnsafeSettings.CheckOnClick = true;
@@ -180,6 +188,13 @@
             this.menuItemForbidUnsafeSettings.Size = new System.Drawing.Size(315, 26);
             this.menuItemForbidUnsafeSettings.Text = "Forbid unsafe settings";
             this.menuItemForbidUnsafeSettings.CheckedChanged += new System.EventHandler(this.menuItemForbidUnsafeSettings_CheckedChanged);
+            // 
+            // menuItemResetSettings
+            // 
+            this.menuItemResetSettings.Name = "menuItemResetSettings";
+            this.menuItemResetSettings.Size = new System.Drawing.Size(315, 26);
+            this.menuItemResetSettings.Text = "Reset settings";
+            this.menuItemResetSettings.Click += new System.EventHandler(this.menuItemResetSettings_Click);
             // 
             // menuItemTheme
             // 
@@ -222,7 +237,7 @@
             // menuItemCheckForUpdates
             // 
             this.menuItemCheckForUpdates.Name = "menuItemCheckForUpdates";
-            this.menuItemCheckForUpdates.Size = new System.Drawing.Size(142, 24);
+            this.menuItemCheckForUpdates.Size = new System.Drawing.Size(142, 26);
             this.menuItemCheckForUpdates.Text = "Check for updates";
             this.menuItemCheckForUpdates.Click += new System.EventHandler(this.menuItemCheckForUpdates_Click);
             // 
@@ -239,22 +254,7 @@
             this.labelVersion.Text = "v1.4";
             this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // menuItemRunOnStartup
-            // 
-            this.menuItemRunOnStartup.CheckOnClick = true;
-            this.menuItemRunOnStartup.Name = "menuItemRunOnStartup";
-            this.menuItemRunOnStartup.Size = new System.Drawing.Size(315, 26);
-            this.menuItemRunOnStartup.Text = "Run on startup";
-            this.menuItemRunOnStartup.CheckedChanged += new System.EventHandler(this.menuItemRunOnStartup_CheckedChanged);
-            // 
-            // menuItemResetSettings
-            // 
-            this.menuItemResetSettings.Name = "menuItemResetSettings";
-            this.menuItemResetSettings.Size = new System.Drawing.Size(315, 26);
-            this.menuItemResetSettings.Text = "Reset settings";
-            this.menuItemResetSettings.Click += new System.EventHandler(this.menuItemResetSettings_Click);
-            // 
-            // Form1
+            // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -274,7 +274,7 @@
             this.MainMenuStrip = this.menuStrip;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
-            this.Name = "Form1";
+            this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Asus Fan Control";
             ((System.ComponentModel.ISupportInitialize)(this.trackBarFanSpeed)).EndInit();
