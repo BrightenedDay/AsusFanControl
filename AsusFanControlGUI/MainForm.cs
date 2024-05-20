@@ -18,7 +18,6 @@ namespace AsusFanControlGUI
         private int fanSpeed = 0;
         private bool serviceLoaded = false;
         bool resetting = false;
-        bool darkMode = false;
 
         public MainForm(bool referenceAvailable, bool startup)
         {
@@ -211,8 +210,6 @@ namespace AsusFanControlGUI
             if (setLabel)
                 menuItemTheme.Text = "Theme: Dark";
 
-            darkMode = true;
-
             UseImmersiveDarkMode(Handle, true);
             menuStrip.Renderer = new MenuStripDarkModeRenderer();
 
@@ -244,8 +241,6 @@ namespace AsusFanControlGUI
         {
             if (setLabel)
                 menuItemTheme.Text = "Theme: Light";
-
-            darkMode = false;
 
             UseImmersiveDarkMode(Handle, false);
             menuStrip.Renderer = new MenuStripLightModeRenderer();
