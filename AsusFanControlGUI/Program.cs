@@ -24,16 +24,16 @@ namespace AsusFanControlGUI
 
                 if (args.Length > 0 && args[0] == "-startup")
                 {
-                    Main main = new Main(true, true);
+                    MainForm main = new MainForm(true, true);
                     main.Visible = false;
                     Application.Run();
                 }
                 else
                 {
                     if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "AsusFanControl.exe")))
-                        Application.Run(new Main(true, false));
+                        Application.Run(new MainForm(true, false));
                     else
-                        Application.Run(new Main(false, false));
+                        Application.Run(new MainForm(false, false));
                 }
             }
         }

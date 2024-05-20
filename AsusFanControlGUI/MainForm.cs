@@ -10,7 +10,7 @@ using Microsoft.Win32;
 
 namespace AsusFanControlGUI
 {
-    public partial class Main : Form
+    public partial class MainForm : Form
     {
         private NotifyIcon notifyIcon;
         private MenuItem trayCheckBoxEnable;
@@ -18,8 +18,9 @@ namespace AsusFanControlGUI
         private int fanSpeed = 0;
         private bool serviceLoaded = false;
         bool resetting = false;
+        bool darkMode = false;
 
-        public Main(bool referenceAvailable, bool startup)
+        public MainForm(bool referenceAvailable, bool startup)
         {
             // In case AsusFanControl fails to load
             if (referenceAvailable)
@@ -159,12 +160,12 @@ namespace AsusFanControlGUI
 
         #region Themes
 
-        #region Title Bar
+        #region Title bar
 
         [DllImport("dwmapi.dll")]
         private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
 
-        private bool UseImmersiveDarkMode(IntPtr handle, bool enabled)
+        public static bool UseImmersiveDarkMode(IntPtr handle, bool enabled)
         {
             if (IsWindows10OrGreater(17763))
             {
@@ -181,7 +182,7 @@ namespace AsusFanControlGUI
             return false;
         }
 
-        private bool IsWindows10OrGreater(int build = -1)
+        private static bool IsWindows10OrGreater(int build = -1)
         {
             return Environment.OSVersion.Version.Major >= 10 && Environment.OSVersion.Version.Build >= build;
         }
@@ -209,6 +210,8 @@ namespace AsusFanControlGUI
         {
             if (setLabel)
                 menuItemTheme.Text = "Theme: Dark";
+
+            darkMode = true;
 
             UseImmersiveDarkMode(Handle, true);
             menuStrip.Renderer = new MenuStripDarkModeRenderer();
@@ -241,6 +244,8 @@ namespace AsusFanControlGUI
         {
             if (setLabel)
                 menuItemTheme.Text = "Theme: Light";
+
+            darkMode = false;
 
             UseImmersiveDarkMode(Handle, false);
             menuStrip.Renderer = new MenuStripLightModeRenderer();
@@ -392,7 +397,7 @@ namespace AsusFanControlGUI
 
         private void menuItemCheckForUpdates_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/Karmel0x/AsusFanControl/releases");
+            System.Diagnostics.Process.Start("https://github.com/BrightenedDay/AsusFanControl/releases/latest");
         }
 
         private void menuItemRunOnStartup_CheckedChanged(object sender, EventArgs e)

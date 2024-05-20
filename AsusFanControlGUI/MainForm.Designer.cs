@@ -1,6 +1,6 @@
 ﻿namespace AsusFanControlGUI
 {
-    partial class Main
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.trackBarFanSpeed = new System.Windows.Forms.TrackBar();
             this.labelValue = new System.Windows.Forms.Label();
             this.labelRPM = new System.Windows.Forms.Label();
@@ -147,7 +147,7 @@
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.menuStrip.Size = new System.Drawing.Size(432, 28);
+            this.menuStrip.Size = new System.Drawing.Size(432, 30);
             this.menuStrip.TabIndex = 10;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -162,7 +162,7 @@
             this.menuItemTheme,
             this.menuItemQuit});
             this.menuItemSettings.Name = "menuItemSettings";
-            this.menuItemSettings.Size = new System.Drawing.Size(76, 24);
+            this.menuItemSettings.Size = new System.Drawing.Size(76, 26);
             this.menuItemSettings.Text = "Settings";
             // 
             // menuItemMinimizeToTray
@@ -237,7 +237,7 @@
             // menuItemCheckForUpdates
             // 
             this.menuItemCheckForUpdates.Name = "menuItemCheckForUpdates";
-            this.menuItemCheckForUpdates.Size = new System.Drawing.Size(142, 24);
+            this.menuItemCheckForUpdates.Size = new System.Drawing.Size(142, 26);
             this.menuItemCheckForUpdates.Text = "Check for updates";
             this.menuItemCheckForUpdates.Click += new System.EventHandler(this.menuItemCheckForUpdates_Click);
             // 
@@ -254,7 +254,7 @@
             this.labelVersion.Text = "v1.5";
             this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // Main
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -274,7 +274,7 @@
             this.MainMenuStrip = this.menuStrip;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
-            this.Name = "Main";
+            this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Asus Fan Control";
             ((System.ComponentModel.ISupportInitialize)(this.trackBarFanSpeed)).EndInit();

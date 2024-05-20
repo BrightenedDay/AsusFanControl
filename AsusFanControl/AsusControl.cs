@@ -18,8 +18,8 @@ namespace AsusFanControl
         public void SetFanSpeed(byte value, byte fanIndex = 0)
         {
             AsusWinIO64.HealthyTable_SetFanIndex(fanIndex);
-            AsusWinIO64.HealthyTable_SetFanPwmDuty(value);
             AsusWinIO64.HealthyTable_SetFanTestMode((char)(value > 0 ? 0x01 : 0x00));
+            AsusWinIO64.HealthyTable_SetFanPwmDuty(value);
         }
 
         public void SetFanSpeed(int percent, byte fanIndex = 0)
