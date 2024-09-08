@@ -2,7 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="AsusFanControlGUI.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="fanSpeed" Type="System.Int32" Scope="User">
+    <Setting Name="FanSpeed" Type="System.UInt16" Scope="User">
       <Value Profile="(Default)">70</Value>
     </Setting>
     <Setting Name="MinimizeToTray" Type="System.Boolean" Scope="User">
@@ -11,7 +11,7 @@
     <Setting Name="forbidUnsafeSettings" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="Theme" Type="System.UInt16" Scope="User">
+    <Setting Name="Theme" Type="System.Byte" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="RunOnStartup" Type="System.Boolean" Scope="User">
@@ -19,6 +19,9 @@
     </Setting>
     <Setting Name="Enabled" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Mode" Type="System.Byte" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>

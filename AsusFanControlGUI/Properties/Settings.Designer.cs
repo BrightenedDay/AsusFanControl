@@ -26,12 +26,12 @@ namespace AsusFanControlGUI.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("70")]
-        public int fanSpeed {
+        public ushort FanSpeed {
             get {
-                return ((int)(this["fanSpeed"]));
+                return ((ushort)(this["FanSpeed"]));
             }
             set {
-                this["fanSpeed"] = value;
+                this["FanSpeed"] = value;
             }
         }
         
@@ -62,9 +62,9 @@ namespace AsusFanControlGUI.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public ushort Theme {
+        public byte Theme {
             get {
-                return ((ushort)(this["Theme"]));
+                return ((byte)(this["Theme"]));
             }
             set {
                 this["Theme"] = value;
@@ -92,6 +92,18 @@ namespace AsusFanControlGUI.Properties {
             }
             set {
                 this["Enabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public byte Mode {
+            get {
+                return ((byte)(this["Mode"]));
+            }
+            set {
+                this["Mode"] = value;
             }
         }
     }

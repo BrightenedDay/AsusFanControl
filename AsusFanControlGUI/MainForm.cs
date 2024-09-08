@@ -12,15 +12,19 @@ namespace AsusFanControlGUI
 {
     public partial class MainForm : Form
     {
+        public dynamic asusControl;
+        public bool serviceLoaded = false;
+        public bool controlEnabled = false;
+        public ushort fanSpeed = 0;
         private NotifyIcon notifyIcon;
         private MenuItem trayCheckBoxEnable;
-        private dynamic asusControl;
-        private int fanSpeed = 0;
-        private bool serviceLoaded = false;
-        bool resetting = false;
+        private bool resetting = false;
+
 
         public MainForm(bool referenceAvailable, bool startup)
         {
+            #region ReferenceLoader
+
             // In case AsusFanControl fails to load
             if (referenceAvailable)
             {
@@ -40,6 +44,8 @@ namespace AsusFanControlGUI
             {
                 MessageBox.Show("Couldn't find 'AsusFanControl.exe' in the same folder as 'AsusFanControlGUI.exe'.", "AsusFanControl.exe Missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
+            #endregion
 
             InitializeComponent();
 
@@ -77,7 +83,6 @@ namespace AsusFanControlGUI
             else
                 setSystemTheme();
 
-
             LoadSettings(false);
         }
 
@@ -92,34 +97,35 @@ namespace AsusFanControlGUI
             Application.ExitThread();
         }
 
-        private void setFanSpeed()
+        #region Fan Speeds Setters
+
+        public void SetFansSpeed()
         {
-            int value = trackBarFanSpeed.Value;
-            Settings.Default.fanSpeed = value;
+            ushort value = fanSpeed;
+            Settings.Default.FanSpeed = fanSpeed;
             Settings.Default.Save();
 
-            if (!checkBoxEnabled.Checked)
+            if (!controlEnabled)
                 value = 0;
 
             if (value == 0)
             {
                 trayCheckBoxEnable.Text = "Status: Disabled";
-                labelValue.Text = $"Status: Disabled ({trackBarFanSpeed.Value}%)";
+                sliderPage.setStatusLabel($"Status: Disabled ({fanSpeed}%)");
             }
             else
             {
                 trayCheckBoxEnable.Text = "Status: Enabled";
-                labelValue.Text = $"Fan Speed: {value}%";
+                sliderPage.setStatusLabel($"Fan Speed: {fanSpeed}%");
             }
 
-            if (fanSpeed == value)
-                return;
-
-            fanSpeed = value;
-
             if (serviceLoaded)
-                asusControl.SetFanSpeeds(fanSpeed);
+                asusControl.SetFanSpeeds(value);
         }
+
+        #endregion
+
+        public bool getEnbd() { return controlEnabled; }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
@@ -145,14 +151,49 @@ namespace AsusFanControlGUI
             menuItemMinimizeToTray.Checked = Settings.Default.MinimizeToTray;
             menuItemRunOnStartup.Checked = Settings.Default.RunOnStartup;
             menuItemForbidUnsafeSettings.Checked = Settings.Default.forbidUnsafeSettings;
-            checkBoxEnabled.Checked = Settings.Default.Enabled;
-            trackBarFanSpeed.Value = Settings.Default.fanSpeed;
-            setFanSpeed();
+            controlEnabled = Settings.Default.Enabled;
+            fanSpeed = Settings.Default.FanSpeed;
+
+            if (Settings.Default.Mode == 0)
+                menuItemMode.Text = "Mode: Slider";
+            else if (Settings.Default.Mode == 1)
+                menuItemMode.Text = "Mode: Curve";
+
+            LoadModeTemplate();
+
+            sliderPage.UpdateData(this);
+
+            SetFansSpeed();
 
             if (setSystemTheme)
                 this.setSystemTheme();
 
             resetting = false;
+        }
+
+        private void LoadModeTemplate()
+        {
+            if (Settings.Default.Mode == 0)
+            {
+                curvePage.Enabled = false;
+                curvePage.Visible = false;
+
+                this.Size = new Size(340, 237);
+
+                sliderPage.Enabled = true;
+                sliderPage.Visible = true;
+
+            }
+            else if (Settings.Default.Mode == 1)
+            {
+                sliderPage.Enabled = false;
+                sliderPage.Visible = false;
+
+                this.Size = new Size(450, 350);
+
+                curvePage.Enabled = true;
+                curvePage.Visible = true;
+            }
         }
 
         #region GUI stuff
@@ -225,16 +266,14 @@ namespace AsusFanControlGUI
             menuItemThemeDark.ForeColor = Color.White;
             menuItemMinimizeToTray.ForeColor = Color.White;
             menuItemForbidUnsafeSettings.ForeColor = Color.White;
-            labelValue.ForeColor = Color.White;
-            labelRPM.ForeColor = Color.White;
-            labelTemps.ForeColor = Color.White;
-            //refreshRPM.ForeColor = Color.White;
-            //refreshCPUTemp.ForeColor = Color.White;
-            labelVersion.ForeColor = Color.White;
-            checkBoxEnabled.ForeColor = Color.White;
             menuItemQuit.ForeColor = Color.White;
             menuItemRunOnStartup.ForeColor = Color.White;
             menuItemResetSettings.ForeColor = Color.White;
+            menuItemMode.ForeColor = Color.White;
+            menuItemModeSlider.ForeColor = Color.White;
+            menuItemModeCurve.ForeColor = Color.White;
+
+            sliderPage.setDarkMode();
         }
 
         private void setLightTheme(bool setLabel = true)
@@ -258,88 +297,23 @@ namespace AsusFanControlGUI
             menuItemThemeDark.ForeColor = SystemColors.ControlText;
             menuItemMinimizeToTray.ForeColor = SystemColors.ControlText;
             menuItemForbidUnsafeSettings.ForeColor = SystemColors.ControlText;
-            labelValue.ForeColor = SystemColors.ControlText;
-            labelRPM.ForeColor = SystemColors.ControlText;
-            labelTemps.ForeColor = SystemColors.ControlText;
-            //refreshRPM.ForeColor = SystemColors.ControlText;
-            //refreshCPUTemp.ForeColor = SystemColors.ControlText;
-            labelVersion.ForeColor = SystemColors.ControlText;
-            checkBoxEnabled.ForeColor = SystemColors.ControlText;
             menuItemQuit.ForeColor = SystemColors.ControlText;
             menuItemRunOnStartup.ForeColor = SystemColors.ControlText;
             menuItemResetSettings.ForeColor = SystemColors.ControlText;
+            menuItemMode.ForeColor = SystemColors.ControlText;
+            menuItemModeSlider.ForeColor = SystemColors.ControlText;
+            menuItemModeCurve.ForeColor = SystemColors.ControlText;
+
+            sliderPage.setLightMode();
         }
 
         #endregion
 
-        private void checkBoxEnabled_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!resetting)
-            {
-                Settings.Default.Enabled = checkBoxEnabled.Checked;
-                Settings.Default.Save();
-                setFanSpeed();
-            }
-        }
-
         private void traySwitchState_Click(object sender, EventArgs e)
         {
-            checkBoxEnabled.Checked = !checkBoxEnabled.Checked;
-            setFanSpeed();
-        }
-
-        private void trackBarFanSpeed_MouseCaptureChanged(object sender, EventArgs e)
-        {
-            if (Settings.Default.forbidUnsafeSettings)
-            {
-                if (trackBarFanSpeed.Value < 40)
-                    trackBarFanSpeed.Value = 40;
-                else if (trackBarFanSpeed.Value > 99)
-                    trackBarFanSpeed.Value = 99;
-            }
-
-            setFanSpeed();
-        }
-
-        private void trackBarFanSpeed_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode != Keys.Left && e.KeyCode != Keys.Right)
-                return;
-
-            trackBarFanSpeed_MouseCaptureChanged(sender, e);
-        }
-
-        private void refreshRPM_Click(object sender, EventArgs e)
-        {
-            if (serviceLoaded)
-            {
-                List<int> fans = asusControl.GetFanSpeeds();
-                StringBuilder fanRPMs = new StringBuilder();
-
-                fanRPMs.Append("Current RPMs: ");
-
-                for (int i = 0; i < fans.Count; i++)
-                {
-                    if (i == 0)
-                        fanRPMs.Append($"Fan {i + 1}: {fans[i]}");
-                    else
-                        fanRPMs.Append($", Fan {i + 1}: {fans[i]}");
-                }
-                labelRPM.Text = fanRPMs.ToString();
-            }
-        }
-
-        private void refreshTemps_Click(object sender, EventArgs e)
-        {
-            if (serviceLoaded)
-            {
-                ulong gpuTemp = asusControl.Thermal_Read_Highest_Gpu_Temperature();
-
-                if (gpuTemp > 0)
-                    labelTemps.Text = $"Current temps: (CPU: {asusControl.Thermal_Read_Cpu_Temperature()}, GPU: {gpuTemp})";
-                else
-                    labelTemps.Text = $"Current temps: (CPU: {asusControl.Thermal_Read_Cpu_Temperature()})";
-            }
+            controlEnabled = !controlEnabled;
+            sliderPage.setCheckbox();
+            SetFansSpeed();
         }
 
         private void menuItemThemeSystem_Click(object sender, EventArgs e)
@@ -426,6 +400,36 @@ namespace AsusFanControlGUI
             LoadSettings();
         }
 
+        private void menuItemModeSlider_Click(object sender, EventArgs e)
+        {
+            Settings.Default.Mode = 0;
+            Settings.Default.Save();
+            menuItemMode.Text = "Mode: Slider";
+            LoadModeTemplate();
+        }
+
+        private void menuItemModeCurve_Click(object sender, EventArgs e)
+        {
+            Settings.Default.Mode = 1;
+            Settings.Default.Save();
+            menuItemMode.Text = "Mode: Curve";
+            LoadModeTemplate();
+        }
+
         #endregion
+
+        //private void graphControl1_MouseClick(object sender, MouseEventArgs e)
+        //{
+        //    for (int i = 0; i < graphControl1.points.Count; i++)
+        //    {
+        //        int y = graphControl1.Height - e.Y;
+        //        (int, int) current = graphControl1.points[i];
+        //        if (current.Item1 == e.X && current.Item2 == y)
+        //        {
+        //            MessageBox.Show("Clicked: " + i);
+        //            break;
+        //        }
+        //    }
+        //}
     }
 }
